@@ -620,42 +620,6 @@
     <div class="logo-sub">Hosted by <strong style="color:var(--gold)">Bradley Wash 🧹</strong></div>
     <div class="host-intro">
       <p>60 seconds. 20 questions. Then face the Chaser.</p>
-      <p style="margin-top:0.5rem; font-size:0.8rem;">Add your ElevenLabs key below for Brad's realistic voice</p>
-    </div>
-
-    <!-- ElevenLabs key + voice + test row -->
-    <div style="margin-top:1.25rem; display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; align-items:center;">
-      <input type="password" id="elevenLabsKeyInput" placeholder="ElevenLabs API key (optional)"
-        style="padding:0.5rem 0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.2);
-               background:rgba(255,255,255,0.07); color:var(--white); font-size:0.82rem; width:230px;"
-        oninput="elevenLabsKey=this.value.trim(); resetBradTest()">
-      <select id="voiceSelect" onchange="elevenLabsVoiceId=this.value; resetBradTest();"
-        style="padding:0.5rem 0.6rem; border-radius:6px; border:1px solid rgba(255,255,255,0.2);
-               background:rgba(255,255,255,0.07); color:var(--white); font-size:0.8rem; cursor:pointer;">
-      </select>
-      <button onclick="testBradVoice()" id="testBradBtn"
-        style="padding:0.5rem 0.9rem; border-radius:6px; border:1px solid var(--gold);
-               background:rgba(245,197,24,0.12); color:var(--gold); font-size:0.8rem;
-               font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.15s;"
-        onmouseover="this.style.background='rgba(245,197,24,0.25)'"
-        onmouseout="this.style.background='rgba(245,197,24,0.12)'"
-        >🧹 Test Brad</button>
-    </div>
-    <div style="font-size:0.7rem; color:var(--grey); margin-top:0.4rem;">
-      Free at <strong style="color:rgba(255,255,255,0.45)">elevenlabs.io</strong> · 10,000 chars/month · needs <strong style="color:rgba(255,255,255,0.45)">text-to-speech</strong> permission
-    </div>
-
-    <!-- Brad speech bubble -->
-    <div id="bradIntroWrap" style="display:none; margin-top:1rem; max-width:480px; margin-left:auto; margin-right:auto;">
-      <div style="display:flex; align-items:flex-start; gap:0.75rem; text-align:left;">
-        <div style="font-size:2.2rem; flex-shrink:0;">🧹</div>
-        <div id="bradIntroBox"
-          style="background:rgba(245,197,24,0.08); border:1px solid rgba(245,197,24,0.3);
-                 border-radius:0 12px 12px 12px; padding:0.9rem 1.1rem;
-                 font-size:0.88rem; font-style:italic; color:var(--white);
-                 line-height:1.6; flex:1;">
-        </div>
-      </div>
     </div>
 
     <button class="btn-primary" onclick="startGame()">🎯 PLAY THE PURSUIT</button>
@@ -1940,22 +1904,8 @@ function sfxDrama() {
 // Fallback: Browser speech synthesis with best available male voice
 
 // ElevenLabs voice IDs — good British male voices on their free tier
-const ELEVENLABS_VOICES = [
-  // Male British
-  { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George — British Male, warm & deep' },
-  { id: 'nPczCjzI2devNBz1zQrb', name: 'Brian — British Male, narrative' },
-  { id: 'onwK4e9ZLuTAKqWW03F9', name: 'Daniel — British Male, authoritative' },
-  { id: 'N2lVS1w4EtoT3dr4eOWO', name: 'Callum — British Male, intense' },
-  { id: 'ODq5zmih8GrVes37Dizd', name: 'Patrick — British Male, confident' },
-  { id: 'g5CIjZEefAph4nQFvHAz', name: 'Ethan — British Male, gentle' },
-  // Male American
-  { id: 'TxGEqnHWrfWFTfGW9XjX', name: 'Josh — American Male, casual' },
-  { id: 'VR6AewLTigWG4xSOukaG', name: 'Arnold — American Male, crisp' },
-  { id: 'pNInz6obpgDQGcFmaJgB', name: 'Adam — American Male, deep' },
-  { id: 'yoZ06aMxZJJ28mfd3POQ', name: 'Sam — American Male, raspy' },
-];
 let elevenLabsKey = '61567551d58d5b6ffa98bfa4fca2e4be1d7a67051da5e5c9bc2d4be8c297558c';
-let elevenLabsVoiceId = ELEVENLABS_VOICES[0].id; // George by default
+let elevenLabsVoiceId = 'onwK4e9ZLuTAKqWW03F9'; // Daniel (British) — default
 
 // Cache best browser voice so we only search once
 let cachedBrowserVoice = null;
@@ -1995,7 +1945,7 @@ function bradSpeakBrowser(text) {
 async function bradSpeak(text) {
   if (!text) return;
   // Always read current voice selection at time of speaking
-  const voiceId = document.getElementById('voiceSelect')?.value || elevenLabsVoiceId;
+  const voiceId = elevenLabsVoiceId;
   if (elevenLabsKey) {
     try {
       const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
@@ -2050,101 +2000,8 @@ function showScreen(id) {
 // ═══════════════════════════════════════════════
 function initIntro() {
   state.chaser = null;
-  // Populate ElevenLabs voice selector
-  const sel = document.getElementById('voiceSelect');
-  if (sel) {
-    sel.innerHTML = ELEVENLABS_VOICES.map(v =>
-      `<option value="${v.id}">${v.name}</option>`
-    ).join('');
-    sel.value = elevenLabsVoiceId;
-  }
 }
 
-function resetBradTest() {
-  const btn = document.getElementById('testBradBtn');
-  btn.textContent = '🧹 Test Brad';
-  btn.style.borderColor = 'var(--gold)';
-  btn.style.color = 'var(--gold)';
-}
-
-async function testBradVoice() {
-  // Unlock audio context immediately on click before any async work
-  try {
-    const ctx = getAudio();
-    await ctx.resume();
-    const buf = ctx.createBuffer(1, 1, 22050);
-    const src = ctx.createBufferSource();
-    src.buffer = buf; src.connect(ctx.destination); src.start();
-  } catch(e) {}
-
-  const btn  = document.getElementById('testBradBtn');
-  const wrap = document.getElementById('bradIntroWrap');
-  const box  = document.getElementById('bradIntroBox');
-
-  elevenLabsKey     = document.getElementById('elevenLabsKeyInput').value.trim() || elevenLabsKey;
-  elevenLabsVoiceId = document.getElementById('voiceSelect').value || elevenLabsVoiceId;
-
-  if (!elevenLabsKey) {
-    wrap.style.display = 'block';
-    box.style.fontStyle = 'normal';
-    box.style.color = '#FF9966';
-    box.textContent = 'Paste your ElevenLabs API key first, then hit Test Brad!';
-    return;
-  }
-
-  // Loading state
-  btn.textContent = '⏳ Connecting...';
-  btn.style.borderColor = 'var(--grey)';
-  btn.style.color = 'var(--grey)';
-  wrap.style.display = 'block';
-  box.style.fontStyle = 'italic';
-  box.style.color = 'var(--grey)';
-  box.textContent = 'Bradley is clearing his throat...';
-
-  const testLine = "Oh! Oh my days! Welcome — welcome! — to The Pursuit! I am Bradley Wash, and I have to tell you... this contestant right here? Phenomenal. Absolutely phenomenal. Let's get cracking!";
-
-  try {
-    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${elevenLabsVoiceId}/stream`, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': elevenLabsKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text: testLine,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: { stability: 0.25, similarity_boost: 0.90, style: 0.65, use_speaker_boost: true }
-      })
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err?.detail?.message || err?.detail || `HTTP ${res.status}`);
-    }
-
-    const blob  = await res.blob();
-    const url   = URL.createObjectURL(blob);
-    const audio = new Audio(url);
-    audio.onended = () => URL.revokeObjectURL(url);
-    await audio.play();
-
-    btn.textContent = '✅ Brad is Ready!';
-    btn.style.borderColor = 'var(--correct)';
-    btn.style.color = 'var(--correct)';
-    box.style.fontStyle = 'italic';
-    box.style.color = 'var(--white)';
-    box.textContent = `"${testLine}"`;
-    sfxFanfare();
-
-  } catch(err) {
-    btn.textContent = '❌ Failed';
-    btn.style.borderColor = 'var(--red-bright)';
-    btn.style.color = 'var(--red-bright)';
-    box.style.fontStyle = 'normal';
-    box.style.color = '#FF9966';
-    box.textContent = `Voice error: ${err.message}. Check your ElevenLabs key and that the text-to-speech permission is enabled.`;
-  }
-}
 function initPickChaser() {
   document.getElementById('pickerCashAmt').textContent = `£${state.cashBuilt.toLocaleString()}`;
   const lineup = document.getElementById('pickerLineup');
@@ -2173,8 +2030,6 @@ function confirmChaser() {
 // START GAME
 // ═══════════════════════════════════════════════
 function startGame() {
-  elevenLabsKey    = document.getElementById('elevenLabsKeyInput').value.trim() || elevenLabsKey;
-  elevenLabsVoiceId = document.getElementById('voiceSelect').value || elevenLabsVoiceId;
   showScreen('cashbuilder');
   initCashBuilder();
 }
