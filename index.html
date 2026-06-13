@@ -121,28 +121,46 @@
     padding: clamp(0.75rem, 2vh, 1.5rem);
   }
   .cb-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     margin-bottom: clamp(0.4rem, 1.5vh, 1.25rem);
   }
   .round-label {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(1.6rem, 6vw, 4rem);
+    font-size: clamp(1.4rem, 5vw, 4rem);
     color: var(--gold); letter-spacing: 0.06em;
     line-height: 1; text-shadow: 0 0 20px rgba(245,197,24,0.3);
   }
   .round-sublabel {
-    font-size: clamp(0.6rem, 1.5vw, 0.8rem); color: var(--grey);
+    font-size: clamp(0.55rem, 1.3vw, 0.8rem); color: var(--grey);
     margin-top: 0.15rem;
-    letter-spacing: 0.1em; text-transform: uppercase;
+    letter-spacing: 0.08em; text-transform: uppercase;
   }
   .timer-wrap {
     display: flex; justify-content: center;
     margin-top: clamp(0.3rem, 1vh, 0.75rem);
   }
   .timer-ring {
-    width: clamp(72px, 16vmin, 128px);
-    height: clamp(72px, 16vmin, 128px);
+    width: clamp(64px, 14vmin, 128px);
+    height: clamp(64px, 14vmin, 128px);
     position: relative;
+  }
+  /* On short screens: put title and timer side by side */
+  @media (max-height: 700px) {
+    .cb-header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+    }
+    .cb-header-text { flex: 1; }
+    .timer-wrap { margin-top: 0; margin-left: 1rem; flex-shrink: 0; }
+    .timer-ring {
+      width: clamp(56px, 12vmin, 90px);
+      height: clamp(56px, 12vmin, 90px);
+    }
   }
   .timer-ring svg {
     transform: rotate(-90deg);
@@ -618,8 +636,10 @@
 <!-- ══════════ CASH BUILDER ══════════ -->
 <div class="screen" id="cashbuilder">
   <div class="cb-header">
-    <div class="round-label">⚡ Cash Builder</div>
-    <div class="round-sublabel">Answer as many as you can in 60 seconds!</div>
+    <div class="cb-header-text">
+      <div class="round-label">⚡ Cash Builder</div>
+      <div class="round-sublabel">Answer as many as you can in 60 seconds!</div>
+    </div>
     <div class="timer-wrap">
       <div class="timer-ring">
         <svg viewBox="0 0 128 128" width="128" height="128">
