@@ -1832,8 +1832,8 @@ let state = {
   // Offer screen
   offerLower: 0, offerMiddle: 0, offerHigher: 0,
   // Chase round (ladder)
-  boardRungs: 7,
-  playerRung: 3, chaserRung: 0, homeRung: 6,
+  boardRungs: 9,
+  playerRung: 4, chaserRung: 0, homeRung: 8,
   chaseQuestions: [], chaseIndex: 0,
   playerTurn: true, chaseActive: false,
   chaseCorrect: 0, chaseMistakes: 0,
@@ -2193,9 +2193,14 @@ function fetchBradComment(context) {
     cashbuilder: [
       `Oh my days! £${state.cashBuilt.toLocaleString()}! That is absolutely... well I was going to say unbelievable but actually I DO believe it. You're off to face the Chaser with that. The question is — will they think it's as brilliant as I do? Probably not, they're not very easily impressed, are they.`,
       `${state.cashBuilt > 5000 ? "Sensational!" : "Oh dear!"} ${state.cbCorrect} right, ${state.cbWrong} wrong. Look, you know what they say — every pound counts. Unless you're the Chaser, in which case every pound BURNS.`,
-      `Right, ${state.cashBuilt.toLocaleString()} pounds built! I have to say, some of those answers had me on the edge of my seat. Mostly the wrong ones, if I'm honest. Let's see if you can take that money home!`,
+      `Right, £${state.cashBuilt.toLocaleString()} built! I have to say, some of those answers had me on the edge of my seat. Mostly the wrong ones, if I'm honest. Let's see if you can take that money home!`,
       `${state.cbCorrect} correct answers! That is — and I don't say this lightly — actually pretty good. The Chaser will not be happy. And frankly, an unhappy Chaser is my favourite kind of Chaser!`,
       `Oh! Oh! Oh! £${state.cashBuilt.toLocaleString()}! You know what, I've seen better — but I've also seen a LOT worse. So let's call that a result, shall we? The Chaser awaits!`,
+      `${state.cbCorrect} right out of ${state.cbCorrect + state.cbWrong}! That's £${state.cashBuilt.toLocaleString()} in the pot. Now — do you go for the high offer, stick with what you've got, or take the safer route home? The Chaser's already warming up. I can tell. They've got that LOOK.`,
+      `Well well well. £${state.cashBuilt.toLocaleString()}. I mean — it's not nothing, is it? It's definitely not nothing. The Chaser will have seen that and thought... hmm. Which is exactly what we want!`,
+      `Sixty seconds. ${state.cbCorrect} correct. That's the cash builder done and dusted! £${state.cashBuilt.toLocaleString()} on the board. Now comes the fun part — and by fun, I mean absolutely terrifying. Time to meet the Chaser!`,
+      `Oh I loved that. ${state.cbCorrect} right — some of those were brilliant. Absolutely brilliant. The Chaser is going to have their work cut out tonight! Let's get them out here!`,
+      `${state.cashBuilt === 0 ? "Oh no no no — zero pounds! That's a tough one. But listen, the lower offer might just be your friend today. Every game's a game!" : `£${state.cashBuilt.toLocaleString()} banked! ${state.cbCorrect} correct answers and ${60 - state.timerSecs} seconds on the clock. Superb effort. Now let's see what the Chaser makes of THAT.`}`,
     ],
   };
   const pool = fallbacks[context] || [`Well then! Let's see what happens next, shall we?`];
@@ -2234,19 +2239,19 @@ function acceptOffer(type) {
   // Lower offer: player starts at rung 4 (one closer to home).
   // Higher offer: player starts at rung 2 (one closer to chaser).
   // Chaser always starts at rung 0.
-  state.boardRungs  = 7;
-  state.chaserRung  = 0;   // top = danger
-  state.homeRung    = state.boardRungs - 1; // 6 = home
+  state.boardRungs  = 9;
+  state.chaserRung  = 0;
+  state.homeRung    = state.boardRungs - 1; // 8 = home
 
   if (type === 'lower') {
     state.cashBuilt  = state.offerLower;
-    state.playerRung = 4;
+    state.playerRung = 5; // one closer to home
   } else if (type === 'higher') {
     state.cashBuilt  = state.offerHigher;
-    state.playerRung = 2;
+    state.playerRung = 3; // one closer to chaser
   } else {
     state.cashBuilt  = state.offerMiddle;
-    state.playerRung = 3;
+    state.playerRung = 4; // middle
   }
 
   startChaseRound();
@@ -2505,12 +2510,24 @@ function fetchFinalBradComment(result) {
     `Get in there! What a result! £${state.cashBuilt.toLocaleString()} is yours! You know what — ${state.chaser.name} did not see that coming. Neither did I, and I'm supposed to be the host. Fan-tastic-al!`,
     `Unbelievable! You've done it! You've beaten ${state.chaser.name} and taken home £${state.cashBuilt.toLocaleString()}! That is one of the best performances I've seen — and I've seen a few, I can tell you. You should be absolutely over the moon!`,
     `Oh! Oh! OH! You've only gone and beaten ${state.chaser.name}! £${state.cashBuilt.toLocaleString()} — that is yours to keep! What a pursuit that was. What. A. Pursuit. I am absolutely made up for you!`,
+    `SENSATIONAL! Absolutely sensational! ${state.chaser.name} gave it everything and it still wasn't enough! You have just won £${state.cashBuilt.toLocaleString()} and I am DELIGHTED for you. Genuinely delighted. That was brilliant television — well, it would have been if there were cameras!`,
+    `Oh I'm going to need a moment. I am going to need AN actual moment. You have just beaten ${state.chaser.name} — one of the most feared chasers in the business — and walked away with £${state.cashBuilt.toLocaleString()}! That. Is. Magnificent!`,
+    `YES! Come on! £${state.cashBuilt.toLocaleString()} and ${state.chaser.name} is going home empty-handed! Do you know how rarely that happens? That was a masterclass. An absolute masterclass. Take a bow!`,
+    `I tell you what — when I saw where you were on that board I thought this could go either way. And it went YOUR way! £${state.cashBuilt.toLocaleString()} is heading home with you tonight. ${state.chaser.name} won't sleep well after that, I promise you!`,
+    `Oh the look on ${state.chaser.name}'s face! Priceless! PRICELESS! You've beaten them fair and square and taken home £${state.cashBuilt.toLocaleString()}. I have genuinely loved every second of this. Well done, seriously — well done!`,
+    `That... was... BRILLIANT! You held your nerve when it mattered most, answered the questions, and now £${state.cashBuilt.toLocaleString()} is YOURS! ${state.chaser.name} has been beaten and I couldn't be happier about it. Phenomenal performance!`,
   ];
   const loseLines = [
     `Ohhhh, so close! ${state.chaser.name} got you in the end, but I tell you what — you gave them a right good chase, didn't you? Don't be too hard on yourself. You put up a purr-fect fight. Or... a pursuit. Get it? Anyway. Well played, honestly!`,
     `Oh no! ${state.chaser.name} has caught you! That is gutting, that is genuinely gutting. But listen — you did brilliantly to get this far. Head held high, yeah? Head held high.`,
     `Ahhh! So close and yet so far! ${state.chaser.name} was just too good today. But you know what? You gave them a proper fright there. I could see it in their eyes. Honestly — well done.`,
     `Oh dear oh dear! ${state.chaser.name} catches up and that's the game! Listen, you should be proud. Not everyone makes it this far. The Chaser is a formidable opponent and you gave it your absolute best shot!`,
+    `Ohhhhh! ${state.chaser.name} gets there! That is such a shame. You played brilliantly in the cash builder and gave a really good account of yourself in the chase too. Sometimes the Chaser is just... the Chaser. They're very good. Annoyingly good.`,
+    `And ${state.chaser.name} wins it! I'm gutted for you, I really am. You were so close at certain points — I thought you might just do it. But they held their nerve. Respect to you though — you were brilliant today.`,
+    `Oh what a game! What a chase! But ultimately ${state.chaser.name} has done what they do best. You should hold your head high — you pushed them all the way and that doesn't happen very often. Genuinely impressive stuff.`,
+    `${state.chaser.name} catches you and that is that! Listen — don't let it get to you. Easier said than done, I know. But you played a great game today and sometimes the chaser is just that little bit too good. They don't call them The Chaser for nothing!`,
+    `Oh! Oh that is so unfortunate! ${state.chaser.name} squeaks through right at the death! You had them worried — I could tell. They'll go home tonight knowing they were in a proper game. That's a real compliment, that is.`,
+    `Ohhh! Caught! Right at the end there ${state.chaser.name} just edges it. That was an incredible chase to watch though. You answered brilliantly under the most incredible pressure. Don't be down — that was a really, really good effort today!`,
   ];
 
   const pool = result === 'win' ? winLines : loseLines;
