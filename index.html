@@ -372,25 +372,27 @@
     align-items: flex-start;
   }
 
-  /* LEFT: Vertical Ladder */
+  /* LEFT: Vertical Ladder — exactly 1/5 of screen width */
   .ladder-col {
     display: flex; flex-direction: column; align-items: center;
-    flex-shrink: 0; width: 110px;
+    flex-shrink: 0;
+    width: 20vw;
+    min-width: 80px;
+    max-width: 160px;
   }
   .ladder-wrap {
     position: relative; width: 100%;
   }
-  /* The ladder track itself */
   .ladder-track {
-    width: 56px; margin: 0 auto;
+    width: 100%;
     position: relative;
   }
   .ladder-rung {
     position: relative; width: 100%;
-    height: 52px;
+    height: clamp(40px, 8vw, 70px);
     display: flex; align-items: center; justify-content: center;
     border-radius: 8px;
-    margin-bottom: 3px;
+    margin-bottom: clamp(2px, 0.4vw, 5px);
     transition: background 0.35s, box-shadow 0.35s;
     border: 1px solid rgba(255,255,255,0.08);
   }
@@ -428,13 +430,14 @@
   /* Prize label on the rung */
   .rung-prize {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.78rem; color: rgba(255,255,255,0.7);
+    font-size: clamp(0.55rem, 1.4vw, 0.85rem);
+    color: rgba(255,255,255,0.7);
     line-height: 1; text-align: center; pointer-events: none;
     user-select: none;
   }
   .rung-prize.is-pot {
     color: var(--gold);
-    font-size: 0.88rem;
+    font-size: clamp(0.65rem, 1.6vw, 1rem);
     text-shadow: 0 0 8px rgba(245,197,24,0.4);
   }
   /* Tokens on the rung */
@@ -443,7 +446,23 @@
     display: flex; align-items: center; justify-content: center;
     gap: 2px; pointer-events: none;
   }
-  .token-emoji { font-size: 1.4rem; line-height: 1; }
+  .token-prize {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1rem, 4vw, 1.75rem);
+    color: var(--gold);
+    text-shadow: 0 0 8px rgba(245,197,24,0.6);
+    line-height: 1; text-align: center;
+    pointer-events: none; user-select: none;
+  }
+  .token-chaser {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1rem, 4vw, 1.75rem);
+    color: var(--red-bright);
+    text-shadow: 0 0 8px rgba(255,34,34,0.6);
+    line-height: 1; text-align: center;
+    letter-spacing: 0.05em;
+    pointer-events: none; user-select: none;
+  }
   /* Side labels */
   .ladder-side-label {
     position: absolute; right: calc(100% + 6px); top: 50%;
@@ -452,14 +471,24 @@
     text-transform: uppercase; white-space: nowrap;
     color: var(--grey);
   }
-  /* End zone labels */
   .ladder-end-label {
-    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; text-align: center;
-    padding: 0.3rem 0; width: 56px; margin: 0 auto;
+    font-weight: 700; text-align: center;
+    padding: 0.2rem 0; width: 100%;
   }
-  .ladder-end-label.top { color: var(--red-bright); }
-  .ladder-end-label.bottom { color: var(--correct); }
+  .ladder-end-label.top {
+    font-size: clamp(1.8rem, 5.5vw, 3rem);  /* bigger chaser icon */
+    line-height: 1;
+  }
+  .rung-home-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1rem, 4vw, 1.75rem);
+    color: var(--correct);
+    text-shadow: 0 0 8px rgba(0,204,102,0.5);
+    line-height: 1; text-align: center;
+    pointer-events: none; user-select: none;
+    position: absolute; z-index: 0;
+  }
+  .rung-tokens { z-index: 1; }
 
   /* RIGHT: Q&A panel */
   .chase-qa-col {
@@ -510,10 +539,10 @@
   .ticker-wrong { background: rgba(204,17,17,0.15); color: #FF6666; }
 
   /* responsive: stack on narrow screens */
-  @media (max-width: 540px) {
+  @media (max-width: 480px) {
     #chaseround { flex-direction: column; align-items: stretch; }
-    .ladder-col { flex-direction: row; width: 100%; height: 72px; }
-    .ladder-track { width: 100%; display: flex; flex-direction: row; margin: 0; }
+    .ladder-col { flex-direction: row; width: 100%; height: 72px; min-width: unset; max-width: unset; }
+    .ladder-track { width: 100%; display: flex; flex-direction: row; }
     .ladder-rung { flex: 1; height: 100%; width: auto; margin-bottom: 0; margin-right: 3px; border-radius: 6px; }
     .ladder-rung:last-child { margin-right: 0; }
     .ladder-end-label { writing-mode: vertical-rl; padding: 0 0.3rem; width: auto; height: 100%; display:flex; align-items:center; justify-content:center; }
@@ -743,11 +772,10 @@
 
   <!-- LEFT COLUMN: Vertical Ladder -->
   <div class="ladder-col">
-    <div class="ladder-end-label top" id="chaserEndLabel">☠️ CHASER</div>
+    <div class="ladder-end-label top" id="chaserEndLabel">☠️</div>
     <div class="ladder-track" id="ladderTrack">
       <!-- Rungs built by JS -->
     </div>
-    <div class="ladder-end-label bottom">🏠 HOME</div>
   </div>
 
   <!-- RIGHT COLUMN: Q&A -->
@@ -2383,7 +2411,7 @@ function startChaseRound() {
   state.chaseMistakes = 0;
 
   document.getElementById('chaserShortName').textContent = state.chaser.name.toUpperCase();
-  document.getElementById('chaserEndLabel').textContent  = `${state.chaser.emoji} CHASER`;
+  document.getElementById('chaserEndLabel').textContent  = state.chaser.emoji;
   document.getElementById('prizePot').textContent = `£${state.cashBuilt.toLocaleString()}`;
   document.getElementById('scoreTicker').innerHTML = '';
 
@@ -2397,22 +2425,21 @@ function buildLadder() {
   const track = document.getElementById('ladderTrack');
   track.innerHTML = '';
   for (let i = 0; i < state.boardRungs; i++) {
-    const rung = document.createElement('div');
-    // Prize value for this rung
-    const prize = rungPrize(i);
-    const isPot = (i === state.playerRung);
-
     let zoneClass = 'rung-mid';
-    if (i === state.chaserRung)  zoneClass = 'rung-top';
-    if (i === state.homeRung)    zoneClass = 'rung-bottom';
+    if (i === state.chaserRung) zoneClass = 'rung-top';
+    if (i === state.homeRung)   zoneClass = 'rung-bottom';
 
+    const rung = document.createElement('div');
     rung.className = `ladder-rung ${zoneClass}`;
     rung.id = `rung_${i}`;
-    rung.innerHTML = `
-      <div class="rung-prize ${isPot?'is-pot':''}" id="rungPrize_${i}">
-        ${prize ? '£'+prize.toLocaleString() : (i===state.chaserRung ? state.chaser.emoji : '🏠')}
-      </div>
-      <div class="rung-tokens" id="rungTokens_${i}"></div>`;
+    // Bottom rung shows HOME label; others just have the token slot
+    if (i === state.homeRung) {
+      rung.innerHTML = `
+        <span class="rung-home-label">HOME</span>
+        <div class="rung-tokens" id="rungTokens_${i}"></div>`;
+    } else {
+      rung.innerHTML = `<div class="rung-tokens" id="rungTokens_${i}"></div>`;
+    }
     track.appendChild(rung);
   }
   renderTokens();
@@ -2435,43 +2462,35 @@ function rungPrize(i) {
 }
 
 function renderTokens() {
-  // Clear all token slots
+  // Clear all token slots and state classes
   for (let i = 0; i < state.boardRungs; i++) {
     const slot = document.getElementById(`rungTokens_${i}`);
     if (slot) slot.innerHTML = '';
     const rung = document.getElementById(`rung_${i}`);
-    if (rung) {
-      rung.classList.remove('player-here','chaser-here','both-here');
-    }
+    if (rung) rung.classList.remove('player-here','chaser-here','both-here');
   }
 
-  const pRung = document.getElementById(`rung_${state.playerRung}`);
-  const cRung = document.getElementById(`rung_${state.chaserRung}`);
+  const prize   = `£${state.cashBuilt.toLocaleString()}`;
+  const pRung   = document.getElementById(`rung_${state.playerRung}`);
+  const cRung   = document.getElementById(`rung_${state.chaserRung}`);
 
   if (state.playerRung === state.chaserRung) {
-    // Same rung — clash!
     if (pRung) {
       pRung.classList.add('both-here');
       document.getElementById(`rungTokens_${state.playerRung}`).innerHTML =
-        `<span class="token-emoji">😀</span><span class="token-emoji">${state.chaser.emoji}</span>`;
+        `<span class="token-prize">${prize}</span><span class="token-chaser">CHASER</span>`;
     }
   } else {
     if (pRung) {
       pRung.classList.add('player-here');
       document.getElementById(`rungTokens_${state.playerRung}`).innerHTML =
-        `<span class="token-emoji">😀</span>`;
+        `<span class="token-prize">${prize}</span>`;
     }
     if (cRung) {
       cRung.classList.add('chaser-here');
       document.getElementById(`rungTokens_${state.chaserRung}`).innerHTML =
-        `<span class="token-emoji">${state.chaser.emoji}</span>`;
+        `<span class="token-chaser">CHASER</span>`;
     }
-  }
-
-  // Highlight active prize label only — prize pot is fixed at the accepted offer
-  for (let i = 0; i < state.boardRungs; i++) {
-    const lbl = document.getElementById(`rungPrize_${i}`);
-    if (lbl) lbl.classList.toggle('is-pot', i === state.playerRung);
   }
 }
 
