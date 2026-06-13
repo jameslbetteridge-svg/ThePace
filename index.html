@@ -132,14 +132,14 @@
     display: flex; align-items: center; gap: 0.75rem;
   }
   .timer-ring {
-    width: 64px; height: 64px; position: relative;
+    width: 128px; height: 128px; position: relative;
   }
   .timer-ring svg { transform: rotate(-90deg); }
-  .timer-ring circle { fill: none; stroke-width: 5; }
+  .timer-ring circle { fill: none; stroke-width: 8; }
   .timer-ring .bg { stroke: rgba(255,255,255,0.1); }
   .timer-ring .fg {
     stroke: var(--correct);
-    stroke-dasharray: 170;
+    stroke-dasharray: 339;
     stroke-dashoffset: 0;
     stroke-linecap: round;
     transition: stroke-dashoffset 1s linear, stroke 0.6s ease;
@@ -148,7 +148,7 @@
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem; color: var(--white);
+    font-size: 2.8rem; color: var(--white);
     transition: color 0.6s ease;
   }
   .timer-ring.amber .fg { stroke: #FF9900; }
@@ -213,11 +213,10 @@
 
   /* Progress strip */
   .q-progress {
-    display: flex; gap: 4px; margin-bottom: 1rem;
-    flex-wrap: wrap;
+    display: flex; gap: 5px; margin-bottom: 1rem;
   }
   .q-pip {
-    width: 28px; height: 8px; border-radius: 4px;
+    flex: 1; height: 14px; border-radius: 5px;
     background: rgba(255,255,255,0.1);
     transition: background 0.3s;
   }
@@ -602,9 +601,9 @@
     </div>
     <div class="timer-wrap">
       <div class="timer-ring">
-        <svg viewBox="0 0 64 64" width="64" height="64">
-          <circle class="bg" cx="32" cy="32" r="27"/>
-          <circle class="fg" id="timerCircle" cx="32" cy="32" r="27"/>
+        <svg viewBox="0 0 128 128" width="128" height="128">
+          <circle class="bg" cx="64" cy="64" r="54"/>
+          <circle class="fg" id="timerCircle" cx="64" cy="64" r="54"/>
         </svg>
         <div class="num" id="timerNum">60</div>
       </div>
@@ -2140,7 +2139,7 @@ function startCBTimer() {
   const circle = document.getElementById('timerCircle');
   const numEl = document.getElementById('timerNum');
   const ring = document.querySelector('.timer-ring');
-  const circ = 2 * Math.PI * 27; // ~170
+  const circ = 2 * Math.PI * 54; // ~339
 
   // Reset colour state
   ring.classList.remove('amber','red');
