@@ -121,15 +121,21 @@
     padding: 1.5rem;
   }
   .cb-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
   }
   .round-label {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem; color: var(--gold); letter-spacing: 0.05em;
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    color: var(--gold); letter-spacing: 0.06em;
+    line-height: 1; text-shadow: 0 0 20px rgba(245,197,24,0.3);
+  }
+  .round-sublabel {
+    font-size: 0.8rem; color: var(--grey); margin-top: 0.2rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
   }
   .timer-wrap {
-    display: flex; align-items: center; gap: 0.75rem;
+    display: flex; justify-content: center; margin-top: 0.75rem;
   }
   .timer-ring {
     width: 128px; height: 128px; position: relative;
@@ -595,10 +601,8 @@
 <!-- ══════════ CASH BUILDER ══════════ -->
 <div class="screen" id="cashbuilder">
   <div class="cb-header">
-    <div>
-      <div class="round-label">⚡ Cash Builder Round</div>
-      <div style="font-size:0.75rem; color:var(--grey)">Answer as many as you can!</div>
-    </div>
+    <div class="round-label">⚡ Cash Builder</div>
+    <div class="round-sublabel">Answer as many as you can in 60 seconds!</div>
     <div class="timer-wrap">
       <div class="timer-ring">
         <svg viewBox="0 0 128 128" width="128" height="128">
